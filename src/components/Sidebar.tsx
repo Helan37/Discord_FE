@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </span>
       </div>
       <DownloadModal closeModal={closeModal} isOpen={isModalOpen} />
-      <DiscoverModal isOpen={isDiscoverModalOpen} closeModal={closeDiscoverModal} /> {/* Pass closeDiscoverModal here */}
+      <DiscoverModal isOpen={isDiscoverModalOpen} closeModal={closeDiscoverModal} /> 
     </div>
   );
 };

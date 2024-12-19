@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 const avatars = [
   "/images/avatars/0.jpg",
   "/images/avatars/1.jpg",
@@ -9,8 +8,9 @@ const avatars = [
   "/images/avatars/4.jpg",
 ];
 
+const userAvatar = "/images/avatars/6.jpg";
+
 function GeneralChat() {
-  
   const [messages, setMessages] = useState([
     { id: 1, user: "Alice", avatar: avatars[0], text: "Hi! Welcome to the general channel!" },
     { id: 2, user: "Bob", avatar: avatars[1], text: "Discord is such a great platform!" },
@@ -19,33 +19,29 @@ function GeneralChat() {
     { id: 5, user: "Eve", avatar: avatars[4], text: "Collaborating with others is the best part!" },
   ]);
 
-
   const [newMessage, setNewMessage] = useState("");
-
 
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (newMessage.trim()) {
-      const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           id: prevMessages.length + 1,
           user: "You",
-          avatar: randomAvatar,
+          avatar: userAvatar,
           text: newMessage,
         },
       ]);
-      setNewMessage(""); 
+      setNewMessage("");
     }
   };
 
   return (
-    <div className="h-screen  text-white flex flex-col p-4 space-y-4">
+    <div className="h-screen text-white flex flex-col p-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">General Chat</h1>
 
-      
       <div className="flex-1 overflow-y-auto space-y-4">
         {messages.map((message) => (
           <div key={message.id} className="flex items-start space-x-4">
@@ -62,7 +58,6 @@ function GeneralChat() {
         ))}
       </div>
 
-      
       <form onSubmit={handleSendMessage} className="flex items-center space-x-4">
         <input
           type="text"

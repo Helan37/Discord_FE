@@ -8,7 +8,7 @@ const avatars = [
   "/images/avatars/12.jpg",
 ];
 
-const userAvatar = "/images/avatars/1.jpg"; 
+const userAvatar = "/images/avatars/9.jpg"; 
 
 function TechTalkChat() {
 

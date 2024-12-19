@@ -8,7 +8,7 @@ const avatars = [
   "/images/avatars/4.jpg",
 ];
 
-const userAvatar = "/images/avatars/6.jpg";
+const userAvatar = "/images/avatars/9.jpg";
 
 function GeneralChat() {
   const [messages, setMessages] = useState([

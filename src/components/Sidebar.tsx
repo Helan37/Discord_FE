@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Discord, Download, Discover } from "./svg";
 import DownloadModal from "./DownloadModal";
-import DiscoverModal from "./DiscoverModal"; // Import DiscoverModal
+import DiscoverModal from "./DiscoverModal"; 
 import { Link } from "react-router-dom";
 
 interface Server {
@@ -45,6 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div className="h-screen w-20 bg-[rgb(30,31,34)] flex flex-col items-center py-4 space-y-4 p-9">
+      <Link to="/">
       <div
         className={`w-12 h-12 p-2 text-white rounded-full flex justify-center items-center cursor-pointer transition-all duration-100 ease-in-out ${
           activeServerId === null
@@ -55,6 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         <Discord />
       </div>
+      </Link>
       {servers.map((server) => (
         <Link key={server.id} to={`/server/${server.id}`}>
           <div
@@ -82,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       <div className="relative group">
         <button
-          onClick={openDownloadModal} // Open the Download modal
+          onClick={openDownloadModal} 
           className="h-12 w-12 pb-1 rounded-full text-[#4CAF50] text-4xl bg-gray-600 flex justify-center items-center cursor-pointer hover:bg-[#4CAF50] hover:text-white hover:rounded-2xl transition-all duration-100 ease-in-out"
         >
           <Download />
@@ -93,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       <div className="relative group">
         <button
-          onClick={openDiscoverModal} // Open the discover modal
+          onClick={openDiscoverModal}
           className="h-12 w-12 pb-1 rounded-full text-[#ffffff] text-4xl bg-gray-600 flex justify-center items-center cursor-pointer hover:bg-[#4CAF50] hover:text-white hover:rounded-2xl transition-all duration-100 ease-in-out"
         >
           <Discover />

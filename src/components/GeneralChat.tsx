@@ -42,7 +42,7 @@ function GeneralChat() {
   };
 
   return (
-    <div className="h-screen bg-gray-900 text-white flex flex-col p-4 space-y-4">
+    <div className="h-screen  text-white flex flex-col p-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">General Chat</h1>
 
       

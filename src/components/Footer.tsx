@@ -25,7 +25,6 @@ function Footer() {
           {isMicrophoneOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
         </div>
 
-        {/* Settings icon with hover effect that only rotates on hover */}
         <div 
           onClick={handleSettingsToggle} 
           className="cursor-pointer transform transition-transform duration-300 ease-in-out hover:rotate-[360deg]"
@@ -34,7 +33,7 @@ function Footer() {
         </div>
       </div>
 
-      {/* User Details Modal */}
+     
       {isUserDetailsOpen && (
         <div className="absolute bottom-16 left-2/3 transform -translate-x-1/2 bg-gray-900 p-4 rounded-lg shadow-lg w-72">
           <h2 className="font-bold">User Details</h2>
@@ -51,7 +50,7 @@ function Footer() {
         </div>
       )}
 
-      {/* Settings Modal */}
+
       {isSettingsOpen && (
         <div className="absolute bottom-16 left-2/3 transform -translate-x-1/2 bg-gray-900 p-4 rounded-lg shadow-lg w-72">
           <h2 className="font-bold">Settings</h2>

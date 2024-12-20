@@ -6,25 +6,44 @@ const ChannelPage: React.FC = () => {
   const location = useLocation();
   const channelName = location.state?.channelName || `Channel ${channelId}`;
 
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [newMessage, setNewMessage] = useState("");
+
+  const userProfile = "/images/avatars/9.jpg";
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      setMessages([...messages, newMessage]);
+      setMessages([...messages, { sender: "You", text: newMessage }]);
       setNewMessage("");
     }
   };
 
   return (
     <div className="flex flex-col h-screen bg-[#313338]">
+      <div className="p-4 border-b border-gray-600">
+        <h2 className="text-2xl font-bold text-white">Channel: {channelName}</h2>
+      </div>
+
       <div className="flex-grow p-4 overflow-y-auto">
-        <h2 className="text-2xl font-bold text-white mb-4">Channel: {channelName}</h2>
-        <div className="space-y-2">
+        <div className="space-y-4">
           {messages.length > 0 ? (
             messages.map((message, index) => (
-              <div key={index} className="text-white">
-                {message}
+              <div
+                key={index}
+                className="flex items-start space-x-4 bg-gray-700 p-4 rounded-lg"
+              >
+                <img
+                  src={userProfile}
+                  alt="User Profile"
+                  className="w-10 h-10 rounded-full"
+                />
+
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-300 font-semibold">
+                    {message.sender}
+                  </span>
+                  <p className="text-white mt-1">{message.text}</p>
+                </div>
               </div>
             ))
           ) : (
@@ -32,6 +51,7 @@ const ChannelPage: React.FC = () => {
           )}
         </div>
       </div>
+
       <div className="p-4 border-t border-gray-600">
         <div className="flex items-center">
           <input

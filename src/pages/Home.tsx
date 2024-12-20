@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const Home = () => {
   const [text, setText] = useState("");
-  const fullText = "SSelect a Channel to start chatting!!!";
+  const fullText = "CCreate a Server Or Select a Channel to start chatting!!!";
 
   useEffect(() => {
     let index = 0;

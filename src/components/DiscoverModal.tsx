@@ -26,7 +26,7 @@ const DiscoverModal: React.FC<DiscoverModalProps> = ({ isOpen, closeModal }) => 
         },
         {
           name: "Creative Coders",
-          imageUrl: "/images/creative_coder.webp",
+          imageUrl: "/images/coding.jpg",
           membersCount: 345,
           description: "For developers who love to code and create cool stuff.",
         },
@@ -37,7 +37,7 @@ const DiscoverModal: React.FC<DiscoverModalProps> = ({ isOpen, closeModal }) => 
       channels: [
         {
           name: "Overwatch League",
-          imageUrl: "/images/overwatch.webp",
+          imageUrl: "/images/overwatch.jpg",
           membersCount: 2567,
           description: "Join the competitive community of Overwatch players from around the world.",
         },
@@ -66,7 +66,7 @@ const DiscoverModal: React.FC<DiscoverModalProps> = ({ isOpen, closeModal }) => 
         },
         {
           name: "Electronic Beats",
-          imageUrl: "/images/electronic.jpeg",
+          imageUrl: "/images/beats.jpg",
           membersCount: 321,
           description: "For fans of electronic music, from chill vibes to upbeat anthems.",
         },

@@ -8,6 +8,8 @@ const avatars = [
   "/images/avatars/12.jpg",
 ];
 
+const userAvatar = "/images/avatars/9.jpg"; 
+
 function TechTalkChat() {
 
   const [messages, setMessages] = useState([
@@ -18,34 +20,29 @@ function TechTalkChat() {
     { id: 5, user: "CloudChaser", avatar: avatars[4], text: "Serverless architecture is the future of scalable apps." },
   ]);
 
-
   const [newMessage, setNewMessage] = useState("");
 
-  
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (newMessage.trim()) {
-      const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
-      const randomUsername = `Techie${Math.floor(Math.random() * 1000) + 1}`; // Random techie username
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           id: prevMessages.length + 1,
-          user: randomUsername,
-          avatar: randomAvatar,
+          user: "You", 
+          avatar: userAvatar,  
           text: newMessage,
         },
       ]);
-      setNewMessage(""); 
+      setNewMessage("");
     }
   };
 
   return (
-    <div className="h-screen bg-gray-900 text-white flex flex-col p-4 space-y-4">
+    <div className="h-screen text-white flex flex-col p-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">Tech Talk Chat</h1>
 
-     
       <div className="flex-1 overflow-y-auto space-y-4">
         {messages.map((message) => (
           <div key={message.id} className="flex items-start space-x-4">
@@ -62,7 +59,6 @@ function TechTalkChat() {
         ))}
       </div>
 
-      
       <form onSubmit={handleSendMessage} className="flex items-center space-x-4">
         <input
           type="text"

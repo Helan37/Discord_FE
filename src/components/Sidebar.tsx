@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Discord, Download, Discover } from "./svg";
 import DownloadModal from "./DownloadModal";
-import DiscoverModal from "./DiscoverModal";
+import DiscoverModal from "./DiscoverModal"; 
+import { Link } from "react-router-dom";
 
 interface Server {
   id: number;
@@ -12,27 +13,19 @@ interface SidebarProps {
   setActiveServerId: (id: number | null) => void;
   activeServerId: number | null;
   openModal: () => void;
+  servers: Server[];
+  handleAddServer: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ setActiveServerId, activeServerId, openModal }) => {
-  const [servers, setServers] = useState<Server[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDiscoverModalOpen, setIsDiscoverModalOpen] = useState(false);
-
-  const handleAddServer = () => {
-    const serverName = window.prompt("Enter the name for your new server:");
-    if (serverName) {
-      const newServer = {
-        id: Date.now(),
-        name: serverName,
-      };
-      setServers([...servers, newServer]);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+const Sidebar: React.FC<SidebarProps> = ({
+  setActiveServerId,
+  activeServerId,
+  openModal,
+  servers,
+  handleAddServer,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false); // Add state for DownloadModal
+  const [isDiscoverModalOpen, setIsDiscoverModalOpen] = useState(false); // Add state for DiscoverModal
 
   const openDiscoverModal = () => {
     setIsDiscoverModalOpen(true);
@@ -42,8 +35,17 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveServerId, activeServerId, op
     setIsDiscoverModalOpen(false);
   };
 
+  const openDownloadModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="h-screen w-16 bg-[#1e1f22] flex flex-col items-center py-4 space-y-4 p-9">
+    <div className="h-screen w-20 bg-[rgb(30,31,34)] flex flex-col items-center py-4 space-y-4 p-9">
+      <Link to="/">
       <div
         className={`w-12 h-12 p-2 text-white rounded-full flex justify-center items-center cursor-pointer transition-all duration-100 ease-in-out ${
           activeServerId === null
@@ -54,18 +56,20 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveServerId, activeServerId, op
       >
         <Discord />
       </div>
+      </Link>
       {servers.map((server) => (
-        <div
-          key={server.id}
-          onClick={() => setActiveServerId(server.id)}
-          className={`h-12 w-12 rounded-full flex justify-center items-center cursor-pointer transition-all duration-100 ease-in-out ${
-            activeServerId === server.id
-              ? "bg-discord rounded-2xl"
-              : "bg-gray-600 hover:bg-discord hover:rounded-2xl"
-          }`}
-        >
-          <span className="text-white text-sm">{server.name.charAt(0)}</span>
-        </div>
+        <Link key={server.id} to={`/server/${server.id}`}>
+          <div
+            onClick={() => setActiveServerId(server.id)}
+            className={`h-12 w-12 rounded-full flex justify-center items-center cursor-pointer transition-all duration-100 ease-in-out ${
+              activeServerId === server.id
+                ? "bg-discord rounded-2xl"
+                : "bg-gray-600 hover:bg-discord hover:rounded-2xl"
+            }`}
+          >
+            <span className="text-white text-sm">{server.name.charAt(0)}</span>
+          </div>
+        </Link>
       ))}
       <div className="relative group">
         <button
@@ -80,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveServerId, activeServerId, op
       </div>
       <div className="relative group">
         <button
-          onClick={openModal}
+          onClick={openDownloadModal} 
           className="h-12 w-12 pb-1 rounded-full text-[#4CAF50] text-4xl bg-gray-600 flex justify-center items-center cursor-pointer hover:bg-[#4CAF50] hover:text-white hover:rounded-2xl transition-all duration-100 ease-in-out"
         >
           <Download />
@@ -101,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveServerId, activeServerId, op
         </span>
       </div>
       <DownloadModal closeModal={closeModal} isOpen={isModalOpen} />
-      <DiscoverModal isOpen={isDiscoverModalOpen} closeModal={closeDiscoverModal} />
+      <DiscoverModal isOpen={isDiscoverModalOpen} closeModal={closeDiscoverModal} /> 
     </div>
   );
 };

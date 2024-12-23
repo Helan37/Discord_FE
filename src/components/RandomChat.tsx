@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 const avatars = [
   "/images/avatars/2.jpg",
   "/images/avatars/5.jpg",
@@ -9,8 +8,9 @@ const avatars = [
   "/images/avatars/0.jpg",
 ];
 
+const userAvatar = "/images/avatars/9.jpg"; 
+
 function RandomChat() {
- 
   const [messages, setMessages] = useState([
     { id: 1, user: "RandomBot", avatar: avatars[0], text: "Did you know? Honey never spoils!" },
     { id: 2, user: "TriviaGuy", avatar: avatars[1], text: "A shrimp's heart is in its head." },
@@ -21,30 +21,26 @@ function RandomChat() {
 
   const [newMessage, setNewMessage] = useState("");
 
-
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (newMessage.trim()) {
-      const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
-      const randomUsername = `User${Math.floor(Math.random() * 1000) + 1}`; // Random user
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           id: prevMessages.length + 1,
-          user: randomUsername,
-          avatar: randomAvatar,
+          user: "You",  
+          avatar: userAvatar,  
           text: newMessage,
         },
       ]);
-      setNewMessage(""); 
+      setNewMessage("");
     }
   };
 
   return (
-    <div className="h-screen bg-gray-900 text-white flex flex-col p-4 space-y-4">
+    <div className="h-screen text-white flex flex-col p-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">Random Chat</h1>
-
 
       <div className="flex-1 overflow-y-auto space-y-4">
         {messages.map((message) => (
@@ -62,7 +58,6 @@ function RandomChat() {
         ))}
       </div>
 
-     
       <form onSubmit={handleSendMessage} className="flex items-center space-x-4">
         <input
           type="text"

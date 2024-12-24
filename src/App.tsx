@@ -4,6 +4,8 @@ import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
+
+
 import ChannelList from "./components/ChannelList";
 import GeneralChat from "./components/GeneralChat";
 import RandomChat from "./components/RandomChat";
@@ -14,8 +16,18 @@ import Header from "./components/Header";
 import Wumpus from "./components/Wumpus";
 import ServerPage from "./pages/ServerPage";
 import MessagePage from "./pages/ChannelPage";
+import FortniteCrewChat from "./components/FortniteCrewChat";
+import CreativeCodersChat from "./components/CreativeCodersChat";
+import ArtAndDesignChat from "./components/ArtAndDesignChat";
+import ElectronicBeatsChat from "./components/ElectronicBeatsChat";
+import HipHopChat from "./components/HipHopChat";
+import IndieMusicLoversChat from "./components/IndieMusicLoversChat";
+import MinecraftBuildersChat from "./components/MinecraftBuildersChat";
+import OverwatchLeagueChat from "./components/OverwatchLeagueChat";
+import TechCommunityChat from "./components/TechCommunityChat";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeServerId, setActiveServerId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [servers, setServers] = useState<{ id: number; name: string }[]>([]);
@@ -38,62 +50,106 @@ function App() {
 
   return (
     <Router>
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <Sidebar
-          setActiveServerId={setActiveServerId}
-          activeServerId={activeServerId}
-          openModal={openModal}
-          servers={servers}
-          handleAddServer={handleAddServer}
-        />
+      {!isAuthenticated ? (
+        <Routes>
+          <Route
+            path="/login"
+            element={<Login onLogin={() => setIsAuthenticated(true)} />}
+          />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="*"
+            element={<Login onLogin={() => setIsAuthenticated(true)} />}
+          />
+        </Routes>
+      ) : (
+        <div className="flex h-screen">
+          <Sidebar
+            setActiveServerId={setActiveServerId}
+            activeServerId={activeServerId}
+            openModal={openModal}
+            servers={servers}
+            handleAddServer={handleAddServer}
+          />
 
-        {/* Server and Channel Layout */}
-        <div className="flex-grow flex">
-          {/* Server Content */}
-          <div className="w-60 bg-[#2b2d31]">
-            <Routes>
-              {servers.map((server) => (
+          <div className="flex-grow flex">
+            <div className="w-60 bg-[#2b2d31]">
+              <Routes>
+                {servers.map((server) => (
+                  <Route
+                    key={server.id}
+                    path={`/server/${server.id}/*`}
+                    element={<ServerPage server={server} />}
+                  />
+                ))}
+                <Route path="/" element={<ChannelList />} />
+                <Route path="/general" element={<ChannelList />} />
+                <Route path="/random" element={<ChannelList />} />
+                <Route path="/tech-talk" element={<ChannelList />} />
+                <Route path="/wumpus" element={<ChannelList />} />
+                <Route path="/channels/tech-community" element={<ChannelList />} />
+                <Route path="/channels/art-and-design" element={<ChannelList />} />
+                <Route path="/channels/creative-coders" element={<ChannelList />} />
+                <Route path="/channels/overwatch-league" element={<ChannelList />} />
+                <Route path="/channels/minecraft-builders" element={<ChannelList />} />
+                <Route path="/channels/fortnite-crew" element={<ChannelList />} />
+                <Route path="/channels/indie-music-lovers" element={<ChannelList />} />
+                <Route path="/channels/electronic-beats" element={<ChannelList />} />
+                <Route path="/channels/hip-hop-central" element={<ChannelList />} />
+              </Routes>
+              <Footer setIsAuthenticated={setIsAuthenticated} />
+            </div>
+
+            <div className="flex-grow flex flex-col bg-[#313338]">
+              <Header />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/general" element={<GeneralChat />} />
+                <Route path="/random" element={<RandomChat />} />
+                <Route path="/tech-talk" element={<TechTalkChat />} />
+                <Route path="/wumpus" element={<Wumpus />} />
                 <Route
-                  key={server.id}
-                  path={`/server/${server.id}/*`}
-                  element={<ServerPage server={server} />}
+                  path="/channels/tech-community" element={<TechCommunityChat />}
                 />
-              ))}
-              <Route path="/" element={<ChannelList />} />
-              <Route path="/general" element={<ChannelList />} />
-              <Route path="/random" element={<ChannelList />} />
-              <Route path="/tech-talk" element={<ChannelList />} />
-              <Route path="/wumpus" element={<ChannelList />} />
-            </Routes>
-            <Footer />
+                <Route path="/channels/art-and-design" element={<ArtAndDesignChat />} />
+                <Route path="/channels/creative-coders" element={<CreativeCodersChat />} />
+                <Route
+                  path="/channels/overwatch-league"
+                  element={<OverwatchLeagueChat />}
+                />
+                <Route
+                  path="/channels/minecraft-builders"
+                  element={<MinecraftBuildersChat />}
+                />
+                <Route
+                  path="/channels/fortnite-crew"
+                  element={<FortniteCrewChat />}
+                />
+                <Route
+                  path="/channels/indie-music-lovers"
+                  element={<IndieMusicLoversChat />}
+                />
+                <Route
+                  path="/channels/electronic-beats"
+                  element={<ElectronicBeatsChat />}
+                />
+                <Route path="/channels/hip-hop-central" element={<HipHopChat />} />
+                {servers.map((server) => (
+                  <Route
+                    key={server.id}
+                    path={`/server/${server.id}/channel/:channelId`}
+                    element={<MessagePage />}
+                  />
+                ))}
+              </Routes>
+            </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="flex-grow flex flex-col bg-[#313338]">
-            <Header />
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/general" element={<GeneralChat />} />
-              <Route path="/random" element={<RandomChat />} />
-              <Route path="/tech-talk" element={<TechTalkChat />} />
-              <Route path="/wumpus" element={<Wumpus />} />
-              {servers.map((server) => (
-                <Route
-                  key={server.id}
-                  path={`/server/${server.id}/channel/:channelId`}
-                  element={<MessagePage />}
-                />
-              ))}
-            </Routes>
-          </div>
+          {isModalOpen && (
+            <DownloadModal closeModal={closeModal} isOpen={isModalOpen} />
+          )}
         </div>
-
-        {/* Modal */}
-        {isModalOpen && <DownloadModal closeModal={closeModal} isOpen={isModalOpen} />}
-      </div>
+      )}
     </Router>
   );
 }

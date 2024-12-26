@@ -11,10 +11,24 @@ function Footer({ setIsAuthenticated, handleLogout, userDetails }: FooterProps) 
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
+  const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
 
   const handleMicrophoneToggle = () => setIsMicrophoneOn(!isMicrophoneOn);
   const handleSettingsToggle = () => setIsSettingsOpen(!isSettingsOpen);
   const handleUserDetailsToggle = () => setIsUserDetailsOpen(!isUserDetailsOpen);
+  
+  const handleLogoutClick = () => {
+    setIsLogoutConfirmationOpen(true);
+  };
+
+  const handleCancelLogout = () => {
+    setIsLogoutConfirmationOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    handleLogout(); 
+    setIsLogoutConfirmationOpen(false); 
+  };
 
   return (
     <div className="w-80 pl-24 bg-[#1e1f22] fixed bottom-0 left-0 text-white p-4 flex items-center justify-between">
@@ -63,7 +77,7 @@ function Footer({ setIsAuthenticated, handleLogout, userDetails }: FooterProps) 
           </button>
           <button
             className="bg-red-500 text-white p-2 rounded mt-2 w-full"
-            onClick={handleLogout}
+            onClick={handleLogoutClick} 
           >
             Log Out
           </button>
@@ -75,6 +89,29 @@ function Footer({ setIsAuthenticated, handleLogout, userDetails }: FooterProps) 
           </button>
         </div>
       )}
+
+{isLogoutConfirmationOpen && (
+  <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+<div className="absolute bottom-28 left-2/3 transform -translate-x-1/2 bg-gray-900 p-4 rounded-lg shadow-lg w-72">
+<h2 className="font-bold text-xl text-center">Are you sure you want to log out?</h2>
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={handleConfirmLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Yes
+        </button>
+        <button
+          onClick={handleCancelLogout}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

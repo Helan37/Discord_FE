@@ -5,7 +5,7 @@ import DiscoverModal from "./DiscoverModal";
 import { Link } from "react-router-dom";
 
 interface Server {
-  id: number;
+  _id: number;
   name: string;
 }
 
@@ -58,11 +58,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       </Link>
       {servers.map((server) => (
-        <Link key={server.id} to={`/server/${server.id}`}>
+        <Link key={server._id} to={`/server/${server._id}`}>
           <div
-            onClick={() => setActiveServerId(server.id)}
+            onClick={() => setActiveServerId(server._id)}
             className={`h-12 w-12 rounded-full flex justify-center items-center cursor-pointer transition-all duration-100 ease-in-out ${
-              activeServerId === server.id
+              activeServerId === server._id
                 ? "bg-discord rounded-2xl"
                 : "bg-gray-600 hover:bg-discord hover:rounded-2xl"
             }`}

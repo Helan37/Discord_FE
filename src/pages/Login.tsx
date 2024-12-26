@@ -11,7 +11,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
     setLoading(true);
     setErrorMessage("");
     try {
-      const response = await fetch("https://discord-backend-hkbq.onrender.com/api/users/login", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

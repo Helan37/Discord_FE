@@ -5,8 +5,11 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLoginClick = async () => {
+    setLoading(true);
+    setErrorMessage("");
     try {
       const response = await fetch("https://discord-backend-hkbq.onrender.com/api/users/login", {
         method: "POST",
@@ -16,6 +19,8 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data.token);
+        localStorage.setItem("token", data.token);
         onLogin();
       } else {
         const errorData = await response.json();
@@ -23,6 +28,8 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
       }
     } catch (error) {
       setErrorMessage("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,10 +65,13 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
-              className="w-full bg-discord p-2 rounded text-white hover:opacity-80"
+              className={`w-full bg-discord p-2 rounded text-white hover:opacity-80 ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={handleLoginClick}
+              disabled={loading}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
           <div className="w-1/3 flex flex-col items-center ml-4">
@@ -70,9 +80,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
               alt="QR Code"
               className="w-24 h-24 mb-4"
             />
-            <button
-              className=" text-white text-xl p-2 rounded "
-            >
+            <button className="text-white text-xl p-2 rounded">
               Login with QR Code
               <p className="p-1 text-sm">Scan this with discord Mobile app to login instantly!</p>
             </button>

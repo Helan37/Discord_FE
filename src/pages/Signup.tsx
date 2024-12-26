@@ -29,7 +29,7 @@ const Signup = () => {
         password,
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         console.log("Signup successful:", response.data);
         navigate("/login");
       }

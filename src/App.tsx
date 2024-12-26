@@ -1,11 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
-
-
 import ChannelList from "./components/ChannelList";
 import GeneralChat from "./components/GeneralChat";
 import RandomChat from "./components/RandomChat";
@@ -31,6 +29,54 @@ function App() {
   const [activeServerId, setActiveServerId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [servers, setServers] = useState<{ id: number; name: string }[]>([]);
+  const [userDetails, setUserDetails] = useState<any>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    if (token) {
+      fetch("https://discord-backend-hkbq.onrender.com/api/users/verifytoken", {
+        method: "POST",
+        headers: { Authorization: `${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setIsAuthenticated(true);
+            console.log(data);
+            fetchUserDetails(data.userId);
+          } else {
+            handleLogout();
+          }
+        })
+        .catch(()=>handleLogout());
+    }
+  }, []);
+
+  const fetchUserDetails = async (userId: string) => {
+  try {
+    const response = await fetch(
+      `https://discord-backend-hkbq.onrender.com/api/users/profile/${userId}`,
+      {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user details");
+    }
+
+    const user = await response.json();
+    console.error(user);
+    setUserDetails(user);
+  } catch (error) {
+    console.error(error);
+    setUserDetails(null); 
+  }
+};
+
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -46,6 +92,12 @@ function App() {
       const newServer = { id: Date.now(), name: serverName };
       setServers([...servers, newServer]);
     }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserDetails(null);
+    localStorage.removeItem("token");
   };
 
   return (
@@ -71,7 +123,6 @@ function App() {
             servers={servers}
             handleAddServer={handleAddServer}
           />
-
           <div className="flex-grow flex">
             <div className="w-60 bg-[#2b2d31]">
               <Routes>
@@ -97,9 +148,12 @@ function App() {
                 <Route path="/channels/electronic-beats" element={<ChannelList />} />
                 <Route path="/channels/hip-hop-central" element={<ChannelList />} />
               </Routes>
-              <Footer setIsAuthenticated={setIsAuthenticated} />
+              <Footer
+                setIsAuthenticated={setIsAuthenticated}
+                handleLogout={handleLogout}
+                userDetails={userDetails}
+              />
             </div>
-
             <div className="flex-grow flex flex-col bg-[#313338]">
               <Header />
               <Routes>
@@ -109,10 +163,17 @@ function App() {
                 <Route path="/tech-talk" element={<TechTalkChat />} />
                 <Route path="/wumpus" element={<Wumpus />} />
                 <Route
-                  path="/channels/tech-community" element={<TechCommunityChat />}
+                  path="/channels/tech-community"
+                  element={<TechCommunityChat />}
                 />
-                <Route path="/channels/art-and-design" element={<ArtAndDesignChat />} />
-                <Route path="/channels/creative-coders" element={<CreativeCodersChat />} />
+                <Route
+                  path="/channels/art-and-design"
+                  element={<ArtAndDesignChat />}
+                />
+                <Route
+                  path="/channels/creative-coders"
+                  element={<CreativeCodersChat />}
+                />
                 <Route
                   path="/channels/overwatch-league"
                   element={<OverwatchLeagueChat />}
@@ -134,20 +195,10 @@ function App() {
                   element={<ElectronicBeatsChat />}
                 />
                 <Route path="/channels/hip-hop-central" element={<HipHopChat />} />
-                {servers.map((server) => (
-                  <Route
-                    key={server.id}
-                    path={`/server/${server.id}/channel/:channelId`}
-                    element={<MessagePage />}
-                  />
-                ))}
               </Routes>
             </div>
           </div>
-
-          {isModalOpen && (
-            <DownloadModal closeModal={closeModal} isOpen={isModalOpen} />
-          )}
+          <DownloadModal isOpen={isModalOpen} closeModal={closeModal} />
         </div>
       )}
     </Router>

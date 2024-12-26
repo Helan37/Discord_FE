@@ -63,7 +63,7 @@ const ChannelPage: React.FC = () => {
           />
           <button
             onClick={handleSendMessage}
-            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg"
+            className="ml-2 bg-discord text-white px-4 py-2 rounded-lg"
           >
             Send
           </button>

@@ -23,18 +23,19 @@ import IndieMusicLoversChat from "./components/IndieMusicLoversChat";
 import MinecraftBuildersChat from "./components/MinecraftBuildersChat";
 import OverwatchLeagueChat from "./components/OverwatchLeagueChat";
 import TechCommunityChat from "./components/TechCommunityChat";
+import AddServerModal from "./components/AddServerModal"; 
 
 function App() {
-
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [activeServerId, setActiveServerId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddServerModalOpen, setIsAddServerModalOpen] = useState(false); 
   const [servers, setServers] = useState<{ _id: any; name: string; description: string; channels: string[] }[]>([]);
   const [userDetails, setUserDetails] = useState<any>(null);
+  const [newServerName, setNewServerName] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // console.log(token);
     if (token) {
       fetch(`${process.env.REACT_APP_BACKEND_URL}api/users/verifytoken`, {
         method: "POST",
@@ -44,40 +45,34 @@ function App() {
         .then((data) => {
           if (data) {
             setIsAuthenticated(true);
-            // console.log(data);
             fetchUserDetails(data.decoded.userId);
           } else {
             handleLogout();
           }
         })
-        .catch(()=>handleLogout());
-    }
-    else {
+        .catch(() => handleLogout());
+    } else {
       setIsAuthenticated(false);
     }
     getAllServers();
   }, []);
 
   const fetchUserDetails = async (userId: string) => {
-  try {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}api/users/profile/${userId}`
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch user details");
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}api/users/profile/${userId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch user details");
+      }
+      const user = await response.json();
+      setUserDetails(user);
+      return user._id;
+    } catch (error) {
+      console.error(error);
+      setUserDetails(null);
     }
-
-    const user = await response.json();
-    // console.log(user);
-    setUserDetails(user);
-    return user._id;
-  } catch (error) {
-    console.error(error);
-    setUserDetails(null); 
-  }
-};
-
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -94,26 +89,27 @@ function App() {
         throw new Error("Failed to fetch servers");
       }
       const servers = await response.json();
-      // console.log(servers)
       setServers(servers);
     } catch (error) {
       console.error(error);
       setServers([]);
     }
-  }
+  };
 
-  const handleAddServer = async() => {
-    const serverName = window.prompt("Enter the name for your new server:");  
-    if (serverName) {
+  const handleAddServer = async () => {
+    if (newServerName.trim()) {
       const createServer = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/server/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: serverName, owner: userDetails._id }),
+        body: JSON.stringify({ name: newServerName, owner: userDetails._id }),
       });
       const newServer = await createServer.json();
+      setIsAddServerModalOpen(false); // Close the modal after creation
       getAllServers();
+    } else {
+      alert("Server name cannot be empty");
     }
   };
 
@@ -144,7 +140,7 @@ function App() {
             activeServerId={activeServerId}
             openModal={openModal}
             servers={servers || []}
-            handleAddServer={handleAddServer}
+            handleAddServer={() => setIsAddServerModalOpen(true)} // Open the new server modal
           />
           <div className="flex-grow flex">
             <div className="w-60 bg-[#2b2d31]">
@@ -153,7 +149,7 @@ function App() {
                   <Route
                     key={server._id}
                     path={`/server/${server._id}/*`}
-                    element={<ServerPage server={server} userDetails={userDetails}/>}
+                    element={<ServerPage server={server} userDetails={userDetails} />}
                   />
                 ))}
                 <Route path="/" element={<ChannelList />} />
@@ -186,43 +182,28 @@ function App() {
                 <Route path="/random" element={<RandomChat />} />
                 <Route path="/tech-talk" element={<TechTalkChat />} />
                 <Route path="/wumpus" element={<Wumpus />} />
-                <Route
-                  path="/channels/tech-community"
-                  element={<TechCommunityChat />}
-                />
-                <Route
-                  path="/channels/art-and-design"
-                  element={<ArtAndDesignChat />}
-                />
-                <Route
-                  path="/channels/creative-coders"
-                  element={<CreativeCodersChat />}
-                />
-                <Route
-                  path="/channels/overwatch-league"
-                  element={<OverwatchLeagueChat />}
-                />
-                <Route
-                  path="/channels/minecraft-builders"
-                  element={<MinecraftBuildersChat />}
-                />
-                <Route
-                  path="/channels/fortnite-crew"
-                  element={<FortniteCrewChat />}
-                />
-                <Route
-                  path="/channels/indie-music-lovers"
-                  element={<IndieMusicLoversChat />}
-                />
-                <Route
-                  path="/channels/electronic-beats"
-                  element={<ElectronicBeatsChat />}
-                />
+                <Route path="/channels/tech-community" element={<TechCommunityChat />} />
+                <Route path="/channels/art-and-design" element={<ArtAndDesignChat />} />
+                <Route path="/channels/creative-coders" element={<CreativeCodersChat />} />
+                <Route path="/channels/overwatch-league" element={<OverwatchLeagueChat />} />
+                <Route path="/channels/minecraft-builders" element={<MinecraftBuildersChat />} />
+                <Route path="/channels/fortnite-crew" element={<FortniteCrewChat />} />
+                <Route path="/channels/indie-music-lovers" element={<IndieMusicLoversChat />} />
+                <Route path="/channels/electronic-beats" element={<ElectronicBeatsChat />} />
                 <Route path="/channels/hip-hop-central" element={<HipHopChat />} />
               </Routes>
             </div>
           </div>
           <DownloadModal isOpen={isModalOpen} closeModal={closeModal} />
+          {/* Add the modal for creating a server */}
+          {isAddServerModalOpen && (
+            <AddServerModal
+              newServerName={newServerName}
+              setNewServerName={setNewServerName}
+              handleAddServer={handleAddServer}
+              closeModal={() => setIsAddServerModalOpen(false)}
+            />
+          )}
         </div>
       )}
     </Router>

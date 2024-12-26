@@ -23,7 +23,7 @@ const Signup = () => {
     setError("");
 
     try {
-      const response = await axios.post("https://discord-backend-hkbq.onrender.com/api/users/signup", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}api/users/signup`, {
         username,
         email,
         password,

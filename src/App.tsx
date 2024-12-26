@@ -25,17 +25,18 @@ import OverwatchLeagueChat from "./components/OverwatchLeagueChat";
 import TechCommunityChat from "./components/TechCommunityChat";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [activeServerId, setActiveServerId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [servers, setServers] = useState<{ id: number; name: string }[]>([]);
+  const [servers, setServers] = useState<{ _id: any; name: string; description: string; channels: string[] }[]>([]);
   const [userDetails, setUserDetails] = useState<any>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log(token);
+    // console.log(token);
     if (token) {
-      fetch("https://discord-backend-hkbq.onrender.com/api/users/verifytoken", {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}api/users/verifytoken`, {
         method: "POST",
         headers: { Authorization: `${token}` },
       })
@@ -43,7 +44,7 @@ function App() {
         .then((data) => {
           if (data) {
             setIsAuthenticated(true);
-            console.log(data);
+            // console.log(data);
             fetchUserDetails(data.decoded.userId);
           } else {
             handleLogout();
@@ -51,12 +52,16 @@ function App() {
         })
         .catch(()=>handleLogout());
     }
+    else {
+      setIsAuthenticated(false);
+    }
+    getAllServers();
   }, []);
 
   const fetchUserDetails = async (userId: string) => {
   try {
     const response = await fetch(
-      `https://discord-backend-hkbq.onrender.com/api/users/profile/${userId}`,
+      `${process.env.REACT_APP_BACKEND_URL}api/users/profile/${userId}`
     );
 
     if (!response.ok) {
@@ -64,8 +69,9 @@ function App() {
     }
 
     const user = await response.json();
-    console.log(user);
+    // console.log(user);
     setUserDetails(user);
+    return user._id;
   } catch (error) {
     console.error(error);
     setUserDetails(null); 
@@ -81,18 +87,40 @@ function App() {
     setIsModalOpen(false);
   };
 
-  const handleAddServer = () => {
-    const serverName = window.prompt("Enter the name for your new server:");
+  const getAllServers = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/server/getall`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch servers");
+      }
+      const servers = await response.json();
+      // console.log(servers)
+      setServers(servers);
+    } catch (error) {
+      console.error(error);
+      setServers([]);
+    }
+  }
+
+  const handleAddServer = async() => {
+    const serverName = window.prompt("Enter the name for your new server:");  
     if (serverName) {
-      const newServer = { id: Date.now(), name: serverName };
-      setServers([...servers, newServer]);
+      const createServer = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/server/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: serverName, owner: userDetails._id }),
+      });
+      const newServer = await createServer.json();
+      getAllServers();
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserDetails(null);
-    localStorage.removeItem("token");
+    // localStorage.removeItem("token");
   };
 
   return (
@@ -115,7 +143,7 @@ function App() {
             setActiveServerId={setActiveServerId}
             activeServerId={activeServerId}
             openModal={openModal}
-            servers={servers}
+            servers={servers || []}
             handleAddServer={handleAddServer}
           />
           <div className="flex-grow flex">
@@ -123,9 +151,9 @@ function App() {
               <Routes>
                 {servers.map((server) => (
                   <Route
-                    key={server.id}
-                    path={`/server/${server.id}/*`}
-                    element={<ServerPage server={server} />}
+                    key={server._id}
+                    path={`/server/${server._id}/*`}
+                    element={<ServerPage server={server} userDetails={userDetails}/>}
                   />
                 ))}
                 <Route path="/" element={<ChannelList />} />

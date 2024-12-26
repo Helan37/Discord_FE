@@ -1,18 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 interface ServerPageProps {
-  server: { id: number; name: string };
+  server: { _id: number; name: string };
+  userDetails: { _id: number; username: string };
 }
 
-const ServerPage: React.FC<ServerPageProps> = ({ server }) => {
-  const [channels, setChannels] = useState<{ id: number; name: string }[]>([]);
+const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
 
-  const handleCreateChannel = () => {
+  const [channels, setChannels] = useState<{ _id: number; name: string }[]>([]);
+  const getChannels = async () => {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/server/get/${server._id}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch channels");
+    }
+    const channels = await response.json();
+    console.log(channels);
+    setChannels(channels.channels);
+  }
+
+  useEffect(() => {
+    getChannels();
+  }
+  , []);
+
+  const handleCreateChannel = async() => {
     const channelName = window.prompt("Enter the name for your new text channel:");
-    if (channelName) {
-      const newChannel = { id: Date.now(), name: channelName };
-      setChannels([...channels, newChannel]);
+    const channelType = window.prompt("Enter the type for your new text channel:");
+
+    if (channelName && channelType) {
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_BACKEND_URL}api/channels/create`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ 
+                name: channelName, 
+                serverId: server._id,
+                type: channelType,
+                owner: userDetails._id,
+              }),
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to create channel");
+          }
+          const newChannel = await response.json();
+          getChannels();
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error(error.message);
+          } else {
+            console.error("An unknown error occurred");
+          }
+      }
     }
   };
 
@@ -25,11 +69,11 @@ const ServerPage: React.FC<ServerPageProps> = ({ server }) => {
           {channels.length > 0 ? (
             channels.map((channel) => (
               <div
-                key={channel.id}
+                key={channel._id}
                 className="flex items-center p-2 bg-[#1e1f22] rounded-md hover:border hover:border-blue-500"
               >
                 <Link
-                  to={`/server/${server.id}/channel/${channel.id}`}
+                  to={`/server/${server._id}/channel/${channel._id}`}
                   state={{ channelName: channel.name }}
                   className="text-blue-400 hover:underline flex-grow"
                 >

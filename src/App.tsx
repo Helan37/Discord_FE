@@ -181,6 +181,7 @@ function App() {
               <Header />
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/server/:serverId/channel/:channelId" element={<MessagePage />} />
                 <Route path="/general" element={<GeneralChat />} />
                 <Route path="/random" element={<RandomChat />} />
                 <Route path="/tech-talk" element={<TechTalkChat />} />

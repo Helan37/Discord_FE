@@ -8,8 +8,34 @@ interface ServerPageProps {
 const ServerPage: React.FC<ServerPageProps> = ({ server }) => {
   const [channels, setChannels] = useState<{ id: number; name: string }[]>([]);
 
+  // Get All Channels
+  // const getChannels = async () => {
+  //   try {
+  //     const response = await fetch(`/api/channels/getall`);
+  //     const data = await response.json();
+  //     setChannels(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+
   const handleCreateChannel = () => {
     const channelName = window.prompt("Enter the name for your new text channel:");
+    // Create Channel
+    // const createChannel = async () => {
+    //   try {
+    //     const response = await fetch(`/api/channels/create`, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({ name: channelName, type: "private", owner: }),
+    //     });
+    //     const data = await response.json();  
+    //     setChannels(data);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
     if (channelName) {
       const newChannel = { id: Date.now(), name: channelName };
       setChannels([...channels, newChannel]);

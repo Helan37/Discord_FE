@@ -18,7 +18,9 @@ import MessagePage from "./pages/ChannelPage";
 function App() {
   const [activeServerId, setActiveServerId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [servers, setServers] = useState<{ id: number; name: string }[]>([]);
+  const [servers, setServers] = useState<{ id: number; name: string }[]>([
+    { id: 87437654753456, name: "Static Server" },
+  ]);
 
   const openModal = () => {
     setIsModalOpen(true);

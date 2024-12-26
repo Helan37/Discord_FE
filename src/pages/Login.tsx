@@ -19,7 +19,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.token);
+        console.log(data);
         localStorage.setItem("token", data.token);
         onLogin();
       } else {

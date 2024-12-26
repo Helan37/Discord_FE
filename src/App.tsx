@@ -56,7 +56,7 @@ function App() {
   const fetchUserDetails = async (userId: string) => {
   try {
     const response = await fetch(
-      `https://discord-backend-hkbq.onrender.com/api/users/profile/${userId}`
+      `https://discord-backend-hkbq.onrender.com/api/users/profile/${userId}`,
     );
 
     if (!response.ok) {
@@ -153,6 +153,7 @@ function App() {
               <Header />
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/server/:serverId/channel/:channelId" element={<MessagePage />} />
                 <Route path="/general" element={<GeneralChat />} />
                 <Route path="/random" element={<RandomChat />} />
                 <Route path="/tech-talk" element={<TechTalkChat />} />

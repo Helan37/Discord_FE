@@ -41,10 +41,10 @@ function App() {
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.success) {
+          if (data) {
             setIsAuthenticated(true);
             console.log(data);
-            fetchUserDetails(data.userId);
+            fetchUserDetails(data.decoded.userId);
           } else {
             handleLogout();
           }
@@ -56,12 +56,7 @@ function App() {
   const fetchUserDetails = async (userId: string) => {
   try {
     const response = await fetch(
-      `https://discord-backend-hkbq.onrender.com/api/users/profile/${userId}`,
-      {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      }
+      `https://discord-backend-hkbq.onrender.com/api/users/profile/${userId}`
     );
 
     if (!response.ok) {
@@ -69,7 +64,7 @@ function App() {
     }
 
     const user = await response.json();
-    console.error(user);
+    console.log(user);
     setUserDetails(user);
   } catch (error) {
     console.error(error);

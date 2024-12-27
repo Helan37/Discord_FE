@@ -33,6 +33,7 @@ function Footer({ setIsAuthenticated, handleLogout, userDetails }: FooterProps) 
   const handleConfirmLogout = () => {
     handleLogout();
     setIsLogoutConfirmationOpen(false);
+    localStorage.removeItem("token");
   };
   const handleChangePasswordClick = async () => {
     try {

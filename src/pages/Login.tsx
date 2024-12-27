@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin }: { onLogin: () => void }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -21,6 +22,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
         const data = await response.json();
         console.log(data);
         localStorage.setItem("token", data.token);
+        navigate("/");
         onLogin();
       } else {
         const errorData = await response.json();

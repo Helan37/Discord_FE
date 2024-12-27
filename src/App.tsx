@@ -37,6 +37,7 @@ function App() {
   const [newServerName, setNewServerName] = useState<string>("");
 
   useEffect(() => {
+    console.log("App component mounted");
     const token = localStorage.getItem("token");
     if (token) {
       fetch(`${process.env.REACT_APP_BACKEND_URL}api/users/verifytoken`, {
@@ -57,7 +58,7 @@ function App() {
       setIsAuthenticated(false);
     }
     getAllServers();
-  }, []);
+  }, [isAuthenticated]);
 
   const fetchUserDetails = async (userId: string) => {
     try {

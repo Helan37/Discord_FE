@@ -12,13 +12,9 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
 
   const [channels, setChannels] = useState<{ _id: number; name: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newChannelName, setNewChannelName] = useState("");
-  const [newChannelType, setNewChannelType] = useState("");
 
-  const [channels, setChannels] = useState<{ _id: number; name: string }[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
-  const [channelType, setChannelType] = useState("text");
+  const [channelType, setChannelType] = useState("public");
 
   const getChannels = async () => {
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/server/get/${server._id}`);
@@ -34,11 +30,7 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
   }, [currPath]);
 
   const handleCreateChannel = async () => {
-    if (newChannelName && newChannelType) {
-
-  }, []);
-
-  const handleCreateChannel = async () => {
+    console.log(channelName, channelType);
     if (channelName && channelType) {
 
       try {
@@ -50,14 +42,9 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-
-              name: newChannelName,
-              serverId: server._id,
-              type: newChannelType,
               name: channelName,
               serverId: server._id,
               type: channelType,
-
               owner: userDetails._id,
             }),
           }
@@ -68,10 +55,8 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
         const newChannel = await response.json();
 
         setIsModalOpen(false);
-        setNewChannelName("");
-        setNewChannelType("");
         setChannelName("");
-        setChannelType("text");
+        setChannelType("public");
         setIsModalOpen(false);
         getChannels();
       } catch (error) {
@@ -135,8 +120,8 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
                 <input
                   type="radio"
                   value="text"
-                  checked={channelType === "text"}
-                  onChange={() => setChannelType("text")}
+                  checked={channelType === "public"}
+                  onChange={() => setChannelType("public")}
                   className="mr-2"
                 />
                 Public
@@ -145,8 +130,8 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
                 <input
                   type="radio"
                   value="voice"
-                  checked={channelType === "voice"}
-                  onChange={() => setChannelType("voice")}
+                  checked={channelType === "private"}
+                  onChange={() => setChannelType("private")}
                   className="mr-2"
                 />
                 Private

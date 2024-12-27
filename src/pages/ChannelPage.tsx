@@ -27,8 +27,46 @@ const ChannelPage: React.FC = () => {
   >([]);
   console.log(messages);
 
+  // useEffect(() => {
+  //   const socket = new WebSocket("ws://localhost:8000"); // WebSocket URL
+  //   socket.onopen = () => {
+  //     console.log("Connected to WebSocket server !!!!!");
+  //     setWs(socket);
+  //   };
+
+  //   socket.onmessage = (event: MessageEvent) => {
+  //     const data = JSON.parse(event.data);
+  //     if (data.event === "receiveMessage") {
+  //       setMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         {
+  //           senderId: data.payload.senderId,
+  //           content: data.payload.content,
+  //           username: data.payload.username,
+  //           timestamp: new Date(data.payload.timestamp),
+  //         },
+  //       ]);
+  //     }
+  //   };
+
+  //   socket.onerror = (error) => {
+  //     console.error("WebSocket error:", error);
+  //   };
+
+  //   socket.onclose = () => {
+  //     console.log("WebSocket connection closed");
+  //   };
+
+  //   return () => {
+  //     if (socket) {
+  //       console.log("Close the WebSocket !!!!!");
+  //       socket.close();
+  //     }
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8000"); // WebSocket URL
+    const socket = new WebSocket("ws://localhost:8000");
     socket.onopen = () => {
       console.log("Connected to WebSocket server !!!!!");
       setWs(socket);
@@ -36,6 +74,7 @@ const ChannelPage: React.FC = () => {
 
     socket.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
+
       if (data.event === "receiveMessage") {
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -46,6 +85,17 @@ const ChannelPage: React.FC = () => {
             timestamp: new Date(data.payload.timestamp),
           },
         ]);
+      }
+
+      if (data.event === "recentMessages") {
+        const recentMessages = data.payload.map((msg: any) => ({
+          senderId: msg.senderId,
+          username: msg.username,
+          content: msg.content,
+          timestamp: new Date(msg.createdAt),
+        }));
+
+        setMessages(recentMessages);
       }
     };
 
@@ -81,24 +131,8 @@ const ChannelPage: React.FC = () => {
     }
   };
 
-  const fetchMessages = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}api/messages/${channelId}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-      const messages = await response.json();
-      setMessages(messages);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const chechUserInThisChannel = async () => {
     try {
-      // fetch the channel details
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}api/channels/get/${channelId}`
       );

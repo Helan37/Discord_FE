@@ -78,7 +78,7 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
               >
                 <Link
                   to={`/server/${server._id}/channel/${channel._id}`}
-                  state={{ channelName: channel.name }}
+                  state={{ channelName: channel.name, userId: userDetails._id, username: userDetails.username }}
                   className="text-blue-400 hover:underline flex-grow"
                 >
                   {channel.name}

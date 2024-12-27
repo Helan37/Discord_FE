@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
@@ -23,6 +24,7 @@ import IndieMusicLoversChat from "./components/IndieMusicLoversChat";
 import MinecraftBuildersChat from "./components/MinecraftBuildersChat";
 import OverwatchLeagueChat from "./components/OverwatchLeagueChat";
 import TechCommunityChat from "./components/TechCommunityChat";
+import WebSocketClient from "./pages/WebSocketClient";
 
 function App() {
 
@@ -139,6 +141,7 @@ function App() {
         </Routes>
       ) : (
         <div className="flex h-screen">
+          <ToastContainer />
           <Sidebar
             setActiveServerId={setActiveServerId}
             activeServerId={activeServerId}
@@ -219,6 +222,7 @@ function App() {
                   element={<ElectronicBeatsChat />}
                 />
                 <Route path="/channels/hip-hop-central" element={<HipHopChat />} />
+                <Route path="/chat" element={<WebSocketClient />} />
               </Routes>
             </div>
           </div>

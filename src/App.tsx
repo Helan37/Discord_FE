@@ -174,7 +174,7 @@ function App() {
               />
             </div>
             <div className="flex-grow flex flex-col bg-[#313338]">
-              <Header />
+              <Header userDetails={userDetails}/>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/server/:serverId/channel/:channelId" element={<MessagePage />} />
@@ -195,7 +195,7 @@ function App() {
             </div>
           </div>
           <DownloadModal isOpen={isModalOpen} closeModal={closeModal} />
-          {/* Add the modal for creating a server */}
+       
           {isAddServerModalOpen && (
             <AddServerModal
               newServerName={newServerName}

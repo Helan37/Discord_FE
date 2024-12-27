@@ -2,7 +2,18 @@ import React, { useState } from "react";
 import { FaUserFriends, FaBell, FaInbox, FaQuestionCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-function Header() {
+
+interface UserDetails {
+  _id: string;
+   username: string;
+    email: string ;
+} 
+
+interface HeaderProps {
+  userDetails: UserDetails;
+}
+
+function Header({ userDetails }: HeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [username, setUsername] = useState("");
 
@@ -11,10 +22,44 @@ function Header() {
     setUsername("");
   };
 
-  const handleSend = () => {
-    console.log("Sending friend request to", username);
-    handleModalClose();
+  const handleSend = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/getuser`,{
+        method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({username}),
+      });
+      const data = await response.json();
+      
+      if (data && data.userId) {
+        const receiverId = data.userId;
+        const senderId = userDetails._id; 
+  
+        const requestResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/send-request`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ senderId, receiverId }),
+        });
+  
+        if (requestResponse.ok) {
+          console.log("Friend request sent to", username);
+        } else {
+          console.error("Failed to send friend request");
+        }
+      } else {
+        console.error("User not found");
+      }
+  
+      handleModalClose();
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
   };
+  
 
   return (
     <div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const Home = () => {
   const [text, setText] = useState("");
-  const fullText = "CCreate a Server Or Select a Channel to start chatting!!!";
+  const fullText = "Create a Server Or Select a Channel to start chatting!!!";
 
   useEffect(() => {
     let index = 0;
@@ -11,9 +11,7 @@ const Home = () => {
       if (index < fullText.length-1) {
         setText((prev) => prev + fullText[index]);
         index++;
-      } else {
-        clearInterval(typingInterval);
-      }
+      } 
     }, 150);
 
     return () => clearInterval(typingInterval); 

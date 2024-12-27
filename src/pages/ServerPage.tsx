@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface ServerPageProps {
   server: { _id: number; name: string };
@@ -7,6 +7,14 @@ interface ServerPageProps {
 }
 
 const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
+  const urlPathname = useLocation().pathname;
+  const currPath = urlPathname.split('/')[2];
+
+  const [channels, setChannels] = useState<{ _id: number; name: string }[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newChannelName, setNewChannelName] = useState("");
+  const [newChannelType, setNewChannelType] = useState("");
+
   const [channels, setChannels] = useState<{ _id: number; name: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
@@ -23,10 +31,16 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
 
   useEffect(() => {
     getChannels();
+  }, [currPath]);
+
+  const handleCreateChannel = async () => {
+    if (newChannelName && newChannelType) {
+
   }, []);
 
   const handleCreateChannel = async () => {
     if (channelName && channelType) {
+
       try {
         const response = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}api/channels/create`,
@@ -36,9 +50,14 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+
+              name: newChannelName,
+              serverId: server._id,
+              type: newChannelType,
               name: channelName,
               serverId: server._id,
               type: channelType,
+
               owner: userDetails._id,
             }),
           }
@@ -47,6 +66,10 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
           throw new Error("Failed to create channel");
         }
         const newChannel = await response.json();
+
+        setIsModalOpen(false);
+        setNewChannelName("");
+        setNewChannelType("");
         setChannelName("");
         setChannelType("text");
         setIsModalOpen(false);
@@ -75,7 +98,7 @@ const ServerPage: React.FC<ServerPageProps> = ({ server, userDetails }) => {
               >
                 <Link
                   to={`/server/${server._id}/channel/${channel._id}`}
-                  state={{ channelName: channel.name }}
+                  state={{ channelName: channel.name, userId: userDetails._id, username: userDetails.username }}
                   className="text-blue-400 hover:underline flex-grow"
                 >
                   {channel.name}

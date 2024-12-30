@@ -60,7 +60,7 @@ src/
 
   ## Demo
 
-![demo](images/Demo.png)
+![demo](public/images/Demo.png)
 
 ## Future Improvements
 

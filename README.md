@@ -60,7 +60,7 @@ src/
 
   ## Demo
 
-[![demo ](Demo.png)]
+![demo](images/Demo.png)
 
 ## Future Improvements
 

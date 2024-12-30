@@ -60,7 +60,7 @@ src/
 
   ## Demo
 
-[![Watch the demo video](PADRE-GINOS.png)](Demo.mov)
+[![demo ](Demo.png)]
 
 ## Future Improvements
 
